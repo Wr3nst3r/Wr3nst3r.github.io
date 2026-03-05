@@ -4,49 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steve's Ball Game</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
     <style>
-        body { font-family: sans-serif; }
-        .game { margin: 20px; padding: 20px; border: 1px solid #ccc; text-align: center; }
-        .ball { width: 50px; height: 50px; border-radius: 50%; background: blue; position: relative; }
+        /* Add your styles here */
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <canvas id="gameCanvas"></canvas>
     <script>
-        const { useState, useEffect } = React;
+        // JavaScript implementation of the game
 
-        function BallGame() {
-            const [position, setPosition] = useState({ left: 0, top: 0 });
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
 
-            useEffect(() => {
-                const handleKeyDown = (event) => {
-                    const newPos = { ...position };
-                    switch (event.key) {
-                        case 'ArrowUp': newPos.top -= 10; break;
-                        case 'ArrowDown': newPos.top += 10; break;
-                        case 'ArrowLeft': newPos.left -= 10; break;
-                        case 'ArrowRight': newPos.left += 10; break;
-                    }
-                    setPosition(newPos);
-                };
-                window.addEventListener('keydown', handleKeyDown);
-                return () => {
-                    window.removeEventListener('keydown', handleKeyDown);
-                };
-            }, [position]);
+        canvas.width = 800;
+        canvas.height = 600;
 
-            return (
-                <div className="game">
-                    <h1>Steve's Ball Game</h1>
-                    <div className="ball" style={{ position: 'absolute', left: `${position.left}px`, top: `${position.top}px` }}></div>
-                    <p>Use arrow keys to move the ball!</p>
-                </div>
-            );
+        let ballRadius = 10;
+        let x = canvas.width / 2;
+        let y = canvas.height - 30;
+        let dx = 2;
+        let dy = -2;
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+            ctx.fillStyle = "#0095DD";
+            ctx.fill();
+            ctx.closePath();
         }
 
-        ReactDOM.render(<BallGame />, document.getElementById('root'));
-    </script>
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBall();
+
+            if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
+                dx = -dx;
+            }
+            if (y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
+                dy = -dy;
+            }
+
+            x += dx;
+            y += dy;
+        }
+
+        setInterval(draw, 10);
+    <\/script>
 </body>
 </html>
