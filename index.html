@@ -3,13 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>React App</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <title>Steve's Ball Game</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.production.min.js"></script>
+    <style>
+        body { font-family: sans-serif; }
+        .game { margin: 20px; padding: 20px; border: 1px solid #ccc; text-align: center; }
+        .ball { width: 50px; height: 50px; border-radius: 50%; background: blue; position: relative; }
+    </style>
 </head>
 <body>
     <div id="root"></div>
-    <script src="index.js"></script>
+    <script>
+        const { useState, useEffect } = React;
+
+        function BallGame() {
+            const [position, setPosition] = useState({ left: 0, top: 0 });
+
+            useEffect(() => {
+                const handleKeyDown = (event) => {
+                    const newPos = { ...position };
+                    switch (event.key) {
+                        case 'ArrowUp': newPos.top -= 10; break;
+                        case 'ArrowDown': newPos.top += 10; break;
+                        case 'ArrowLeft': newPos.left -= 10; break;
+                        case 'ArrowRight': newPos.left += 10; break;
+                    }
+                    setPosition(newPos);
+                };
+                window.addEventListener('keydown', handleKeyDown);
+                return () => {
+                    window.removeEventListener('keydown', handleKeyDown);
+                };
+            }, [position]);
+
+            return (
+                <div className="game">
+                    <h1>Steve's Ball Game</h1>
+                    <div className="ball" style={{ position: 'absolute', left: `${position.left}px`, top: `${position.top}px` }}></div>
+                    <p>Use arrow keys to move the ball!</p>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<BallGame />, document.getElementById('root'));
+    </script>
 </body>
 </html>
